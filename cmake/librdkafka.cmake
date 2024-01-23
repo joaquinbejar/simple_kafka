@@ -5,8 +5,8 @@ FetchContent_Declare(librdkafka
 )
 FetchContent_MakeAvailable(librdkafka)
 
-set(CURL_INCLUDE ${librdkafka_SOURCE_DIR}/include CACHE INTERNAL "")
+set(KAFKA_INCLUDE ${librdkafka_SOURCE_DIR}/src-cpp CACHE INTERNAL "")
 if (CMAKE_DEBUG)
     message(STATUS "simple_mariadb/cmake librdkafka_SOURCE_DIR ${librdkafka_SOURCE_DIR}")
-    message(STATUS "simple_mariadb/cmake CURL_INCLUDE ${CURL_INCLUDE}")
+    message(STATUS "simple_mariadb/cmake KAFKA_INCLUDE ${KAFKA_INCLUDE}")
 endif ()

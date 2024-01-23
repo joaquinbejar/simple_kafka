@@ -42,7 +42,7 @@ target_include_directories(simple_kafka PUBLIC
         ${SIMPLE_LOGGER_INCLUDE}
         ${NLOHMANN_JSON_INCLUDE}
         ${COMMON_INCLUDE}
-        ${CURL_INCLUDE}
+        ${KAFKA_INCLUDE}
 )
 
 target_link_libraries(simple_kafka

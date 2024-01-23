@@ -15,7 +15,7 @@ target_include_directories(test_simple_kafka_common
         ${SIMPLE_LOGGER_INCLUDE}
         ${NLOHMANN_JSON_INCLUDE}
         ${COMMON_INCLUDE}
-        ${KAFKACPP_HEADER}
+        ${KAFKA_INCLUDE}
 )
 target_link_libraries(test_simple_kafka_common PRIVATE Catch2::Catch2WithMain)
 target_link_libraries(test_simple_kafka_common PRIVATE
@@ -34,7 +34,7 @@ target_include_directories(test_simple_kafka_client
         ${SIMPLE_LOGGER_INCLUDE}
         ${NLOHMANN_JSON_INCLUDE}
         ${COMMON_INCLUDE}
-        ${KAFKACPP_HEADER}
+        ${KAFKA_INCLUDE}
 )
 target_link_libraries(test_simple_kafka_client PRIVATE Catch2::Catch2WithMain)
 target_link_libraries(test_simple_kafka_client PRIVATE
@@ -42,6 +42,7 @@ target_link_libraries(test_simple_kafka_client PRIVATE
         simple_config
         common
         simple_kafka
+        rdkafka++
 )
 
 
@@ -74,7 +75,7 @@ target_include_directories(test_simple_kafka_exceptions
         ${SIMPLE_LOGGER_INCLUDE}
         ${NLOHMANN_JSON_INCLUDE}
         ${COMMON_INCLUDE}
-        ${CURL_INCLUDE}
+        ${KAFKA_INCLUDE}
 )
 
 target_link_libraries(test_simple_kafka_exceptions PRIVATE Catch2::Catch2WithMain)
