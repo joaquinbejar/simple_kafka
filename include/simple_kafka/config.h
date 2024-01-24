@@ -13,6 +13,7 @@
 namespace simple_kafka::config {
 
     using ::common::get_env_variable_string;
+    using ::common::get_env_variable_vector_string;
 
     class KafkaConfig : public simple_config::Config {
     public:
@@ -32,7 +33,7 @@ namespace simple_kafka::config {
 
     protected:
         std::string m_kafka_brokers = get_env_variable_string("KAFKA_BROKERS", "localhost:9092");
-        std::string m_kafka_topic = get_env_variable_string("KAFKA_TOPIC", "");
+        std::vector<std::string> m_kafka_topics = get_env_variable_vector_string("KAFKA_TOPICS", "");
         std::string m_kafka_group_id = get_env_variable_string("KAFKA_GROUP_ID", "");
         std::unique_ptr<RdKafka::Conf> m_conf = std::unique_ptr<RdKafka::Conf>(
                 RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
@@ -42,7 +43,7 @@ namespace simple_kafka::config {
     public:
         [[nodiscard]] std::string get_kafka_brokers() const;
 
-        [[nodiscard]] std::string get_kafka_topic() const;
+        [[nodiscard]] std::vector<std::string> get_kafka_topics() const;
 
         [[nodiscard]] std::string get_kafka_group_id() const;
 

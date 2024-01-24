@@ -35,7 +35,7 @@ namespace simple_kafka::config {
             logger->send<simple_logger::LogLevel::ERROR>("KAFKA_BROKERS is empty");
             return false;
         }
-        if (m_kafka_topic.empty()) {
+        if (m_kafka_topics.empty()) {
             logger->send<simple_logger::LogLevel::ERROR>("KAFKA_TOPIC is empty");
             return false;
         }
@@ -55,7 +55,7 @@ namespace simple_kafka::config {
     json KafkaConfig::to_json() const {
         json j;
         j["kafka_brokers"] = m_kafka_brokers;
-        j["kafka_topic"] = m_kafka_topic;
+        j["kafka_topic"] =  m_kafka_topics;
         j["kafka_group_id"] = m_kafka_group_id;
 
         return j;
@@ -70,7 +70,7 @@ namespace simple_kafka::config {
      */
     void KafkaConfig::from_json(const json &j) {
         try {
-            m_kafka_topic = j.at("kafka_topic").get<std::string>();
+            m_kafka_topics = j.at("kafka_topic").get<std::vector<std::string>>();
             m_kafka_brokers = j.at("kafka_brokers").get<std::string>();
             m_kafka_group_id = j.at("kafka_group_id").get<std::string>();
             this->m_set_kafka_conf();
@@ -96,8 +96,13 @@ namespace simple_kafka::config {
         return m_kafka_brokers;
     }
 
-    std::string KafkaConfig::get_kafka_topic() const {
-        return m_kafka_topic;
+    std::vector<std::string> KafkaConfig::get_kafka_topics() const {
+//        if (m_kafka_topics.empty()) {
+//            return {};
+//        }
+
+
+        return m_kafka_topics;
     }
 
     std::string KafkaConfig::get_kafka_group_id() const {
