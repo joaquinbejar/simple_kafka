@@ -40,7 +40,8 @@ namespace simple_kafka::config {
             return false;
         }
         if (m_kafka_group_id.empty()) {
-            logger->send<simple_logger::LogLevel::WARNING>("KAFKA_GROUP_ID is empty");
+            logger->send<simple_logger::LogLevel::ERROR>("KAFKA_GROUP_ID is empty");
+            return false;
         }
         return true;
     }

@@ -6,6 +6,7 @@
 #define SIMPLE_KAFKA_COMMON_H
 
 #include <rdkafkacpp.h>
+#include <iostream>
 
 namespace simple_kafka::common {
 

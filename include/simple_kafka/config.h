@@ -35,7 +35,7 @@ namespace simple_kafka::config {
         std::string m_kafka_brokers = get_env_variable_string("KAFKA_BROKERS", "localhost:9092");
         std::vector<std::string> m_kafka_topics = get_env_variable_vector_string("KAFKA_TOPICS", "");
         std::string m_kafka_group_id = get_env_variable_string("KAFKA_GROUP_ID", "");
-        std::unique_ptr<RdKafka::Conf> m_conf = std::unique_ptr<RdKafka::Conf>(
+        std::shared_ptr<RdKafka::Conf> m_conf = std::shared_ptr<RdKafka::Conf>(
                 RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
         std::string m_errstr;
 

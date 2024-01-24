@@ -16,6 +16,8 @@ namespace simple_kafka::common {
 
     void MetaConsumer::consume_cb(RdKafka::Message &msg, void *opaque) {
         // Manejar mensajes recibidos
+
+        std::cout << "Message received: " << msg.payload() << std::endl;
     }
 
 }

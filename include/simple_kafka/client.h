@@ -10,19 +10,30 @@
 
 namespace simple_kafka::client {
 
-
-
     class KafkaClientConsumer {
 
     public:
-        KafkaClientConsumer(std::unique_ptr< config::KafkaConfig> config);
+        KafkaClientConsumer(config::KafkaConfig config);
+
+        ~KafkaClientConsumer();
 
         void subscribe();
 
+        void unsubscribe();
+
+        void consume();
+
+        void stop();
+
 
     private:
-        std::unique_ptr< config::KafkaConfig> m_config;
+        config::KafkaConfig m_config;
         std::unique_ptr<RdKafka::KafkaConsumer> m_consumer;
+        common::MetaConsumer exConsumer;
+        std::atomic<bool> m_run_consume = false;
+        std::thread m_consumeThread;
+
+        void m_consume();
 
     };
 
