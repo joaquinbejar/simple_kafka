@@ -51,6 +51,7 @@ target_link_libraries(simple_kafka
         simple_config
         simple_logger
         common
+        rdkafka++
 )
 
 set(SIMPLE_KAFKA_TESTS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/tests)

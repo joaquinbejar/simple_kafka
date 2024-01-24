@@ -63,6 +63,7 @@ target_link_libraries(test_simple_kafka_config PRIVATE
         simple_config
         common
         simple_kafka
+        rdkafka++
 )
 
 
