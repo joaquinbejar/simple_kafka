@@ -35,7 +35,16 @@ namespace simple_kafka::client {
     void KafkaClientConsumer::m_consume() {
         while (m_run_consume) {
             std::unique_ptr<RdKafka::Message> msg = std::unique_ptr<RdKafka::Message>(m_consumer->consume(1000));
-            exConsumer.consume_cb(*msg, nullptr);
+            if (msg->err() == RdKafka::ERR_NO_ERROR) {
+                // Mensaje recibido correctamente
+                std::cout << "Message received: " << static_cast<const char*>(msg->payload()) << std::endl;
+            } else if (msg->err() == RdKafka::ERR__TIMED_OUT) {
+                // El consumo ha excedido el tiempo límite
+                std::cout << "Consumption timed out." << std::endl;
+            } else {
+                // Manejar otros errores
+                std::cerr << "Error in consume: " << msg->errstr() << std::endl;
+            }
         }
         m_consumer->close();
     }
@@ -46,8 +55,8 @@ namespace simple_kafka::client {
     }
 
     void KafkaClientConsumer::stop() {
+        std::lock_guard<std::mutex> lock(m_Mutex);
         m_run_consume = false;
-
         if (m_consumeThread.joinable()) {
             m_consumeThread.join();
         }
