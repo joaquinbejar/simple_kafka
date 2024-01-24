@@ -8,46 +8,49 @@
 #include <simple_config/config.h>
 #include <simple_logger/logger.h>
 #include <common/common.h>
-#include <rdkafkacpp.h>
+#include <simple_kafka/common.h>
 
 namespace simple_kafka::config {
 
-        class KafkaConfig : public simple_config::Config {
-        public:
+    using ::common::get_env_variable_string;
 
-            KafkaConfig();
+    class KafkaConfig : public simple_config::Config {
+    public:
 
-            bool validate() override;
+        KafkaConfig();
 
-            [[nodiscard]] json to_json() const override;
+        bool validate() override;
 
-            void from_json(const json &j) override;
+        [[nodiscard]] json to_json() const override;
 
-            [[nodiscard]] std::string to_string() const override;
+        void from_json(const json &j) override;
 
-        private:
-            void m_set_kafka_conf();
+        [[nodiscard]] std::string to_string() const override;
 
-        protected:
-            std::string m_kafka_brokers = common::get_env_variable_string("KAFKA_BROKERS", "localhost:9092");
-                std::string m_kafka_topic = common::get_env_variable_string("KAFKA_TOPIC", "");
-            std::string m_kafka_group_id = common::get_env_variable_string("KAFKA_GROUP_ID", "");
-            std::unique_ptr<RdKafka::Conf> m_conf = std::unique_ptr<RdKafka::Conf>(RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
-            std::string m_errstr;
+    private:
+        void m_set_kafka_conf();
+
+    protected:
+        std::string m_kafka_brokers = get_env_variable_string("KAFKA_BROKERS", "localhost:9092");
+        std::string m_kafka_topic = get_env_variable_string("KAFKA_TOPIC", "");
+        std::string m_kafka_group_id = get_env_variable_string("KAFKA_GROUP_ID", "");
+        std::unique_ptr<RdKafka::Conf> m_conf = std::unique_ptr<RdKafka::Conf>(
+                RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
+        std::string m_errstr;
 
 
-        public:
-            [[nodiscard]] std::string get_kafka_brokers() const;
+    public:
+        [[nodiscard]] std::string get_kafka_brokers() const;
 
-            [[nodiscard]] std::string get_kafka_topic() const;
+        [[nodiscard]] std::string get_kafka_topic() const;
 
-            [[nodiscard]] std::string get_kafka_group_id() const;
+        [[nodiscard]] std::string get_kafka_group_id() const;
 
-            [[nodiscard]] RdKafka::Conf *get_kafka_conf() ;
+        [[nodiscard]] RdKafka::Conf *get_kafka_conf();
 
-            // add a logger to the config
-            std::shared_ptr<simple_logger::Logger> logger = std::make_shared<simple_logger::Logger>(loglevel);
-        };
-    
+        // add a logger to the config
+        std::shared_ptr<simple_logger::Logger> logger = std::make_shared<simple_logger::Logger>(loglevel);
+    };
+
 }
 #endif //SIMPLE_KAFKA_CONFIG_H
