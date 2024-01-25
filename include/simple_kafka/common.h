@@ -7,18 +7,20 @@
 
 #include <rdkafkacpp.h>
 #include <iostream>
+#include <simple_logger/logger.h>
 
 namespace simple_kafka::common {
 
-    class MetaConsumer : public RdKafka::EventCb, public RdKafka::RebalanceCb, public RdKafka::ConsumeCb {
+    class MetaConsumer : public RdKafka::ConsumeCb {
+
+    private:
+        std::shared_ptr<simple_logger::Logger> logger;
+
     public:
-        void event_cb(RdKafka::Event &event) override;
-
-        void rebalance_cb(RdKafka::KafkaConsumer *consumer, RdKafka::ErrorCode err,
-                          std::vector<RdKafka::TopicPartition *> &partitions) override;
-
+        explicit MetaConsumer(std::shared_ptr<simple_logger::Logger> logger);
         void consume_cb(RdKafka::Message &msg, void *opaque) override;
     };
+
 
 }
 #endif //SIMPLE_KAFKA_COMMON_H

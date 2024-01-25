@@ -13,9 +13,13 @@ namespace simple_kafka::config {
         if (this->validate()) {
             m_conf->set("bootstrap.servers", m_kafka_brokers, m_errstr);
             m_conf->set("group.id", m_kafka_group_id, m_errstr);
-            simple_kafka::common::MetaConsumer metaconsumer;
+//            simple_kafka::common::MetaConsumer metaconsumer;
+
+
+//            conf->set("rebalance_cb", &ex_rebalance_cb, errstr);
+            m_conf->set("enable.partition.eof", "true", m_errstr);
 //            m_conf->set("event_cb", dynamic_cast<RdKafka::EventCb*>(&metaconsumer), m_errstr);
-//            m_conf->set("rebalance_cb", dynamic_cast<RdKafka::RebalanceCb*>(&metaconsumer), m_errstr);
+//            m_conf->set("rebalance_cb", &m_rebalance_cb, m_errstr);
 //            m_conf->set("consume_cb", dynamic_cast<RdKafka::ConsumeCb*>(&metaconsumer), m_errstr);
         } else {
             logger->send<simple_logger::LogLevel::ERROR>("Error setting Kafka configuration");

@@ -28,8 +28,10 @@ namespace simple_kafka::config {
 
         [[nodiscard]] std::string to_string() const override;
 
+
     private:
         void m_set_kafka_conf();
+
 
     protected:
         std::string m_kafka_brokers = get_env_variable_string("KAFKA_BROKERS", "localhost:9092");

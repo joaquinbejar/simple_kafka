@@ -29,7 +29,7 @@ namespace simple_kafka::client {
     private:
         config::KafkaConfig m_config;
         std::shared_ptr<RdKafka::KafkaConsumer> m_consumer;
-//        common::MetaConsumer exConsumer;
+        common::MetaConsumer exConsumer = common::MetaConsumer(m_config.logger);
         std::atomic<bool> m_run_consume = false;
         std::thread m_consumeThread;
         std::mutex m_Mutex;
