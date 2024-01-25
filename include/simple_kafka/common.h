@@ -11,14 +11,14 @@
 
 namespace simple_kafka::common {
 
-    class MetaConsumer : public RdKafka::ConsumeCb {
+    class MetaConsumer {
 
     private:
         std::shared_ptr<simple_logger::Logger> logger;
 
     public:
         explicit MetaConsumer(std::shared_ptr<simple_logger::Logger> logger);
-        void consume_cb(RdKafka::Message &msg, void *opaque) override;
+        virtual void consume_cb(RdKafka::Message &msg) ;
     };
 
 

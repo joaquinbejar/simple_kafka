@@ -8,11 +8,13 @@
 
 using namespace simple_kafka::config;
 using namespace simple_kafka::client;
+using namespace simple_kafka::common;
 
 
 TEST_CASE("KafkaClientConsumer", "[KafkaClientConsumer]") {
     KafkaConfig config;
-    KafkaClientConsumer consumer(config);
+    MetaConsumer exConsumer = MetaConsumer(config.logger);
+    KafkaClientConsumer consumer(config, exConsumer);
     consumer.subscribe();
     consumer.consume();
     //sleep for 10 seconds

@@ -5,7 +5,7 @@
 
 namespace simple_kafka::common {
 
-    void MetaConsumer::consume_cb(RdKafka::Message &msg, void *opaque) {
+    void MetaConsumer::consume_cb(RdKafka::Message &msg) {
         switch (msg.err()) {
             case RdKafka::ERR__TIMED_OUT:
                 logger->send<simple_logger::LogLevel::WARNING>("MetaConsumer Consumption timed out.");
