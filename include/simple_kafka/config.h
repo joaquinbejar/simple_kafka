@@ -14,6 +14,7 @@ namespace simple_kafka::config {
 
     using ::common::get_env_variable_string;
     using ::common::get_env_variable_vector_string;
+    using ::common::get_env_variable_int;
 
     class KafkaConfig : public simple_config::Config {
     public:
@@ -32,11 +33,11 @@ namespace simple_kafka::config {
     private:
         void m_set_kafka_conf();
 
-
     protected:
         std::string m_kafka_brokers = get_env_variable_string("KAFKA_BROKERS", "localhost:9092");
         std::vector<std::string> m_kafka_topics = get_env_variable_vector_string("KAFKA_TOPICS", "");
         std::string m_kafka_group_id = get_env_variable_string("KAFKA_GROUP_ID", "");
+        int m_kafka_msg_timeout = get_env_variable_int("KAFKA_MSG_TIMEOUT", 3000);
         std::shared_ptr<RdKafka::Conf> m_conf = std::shared_ptr<RdKafka::Conf>(
                 RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
         std::string m_errstr;
@@ -50,6 +51,8 @@ namespace simple_kafka::config {
         [[nodiscard]] std::string get_kafka_group_id() const;
 
         [[nodiscard]] RdKafka::Conf *get_kafka_conf();
+
+        [[nodiscard]] int get_kafka_msg_timeout() const;
 
         // add a logger to the config
         std::shared_ptr<simple_logger::Logger> logger = std::make_shared<simple_logger::Logger>(loglevel);

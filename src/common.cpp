@@ -16,7 +16,7 @@ namespace simple_kafka::common {
                 break;
             }
             case RdKafka::ERR__PARTITION_EOF:
-                logger->send<simple_logger::LogLevel::WARNING>("MetaConsumer End of partition reached.");
+                logger->send<simple_logger::LogLevel::DEBUG>("MetaConsumer End of partition reached.");
                 break;
             case RdKafka::ERR__UNKNOWN_TOPIC:
             case RdKafka::ERR__UNKNOWN_PARTITION:

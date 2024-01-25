@@ -13,14 +13,7 @@ namespace simple_kafka::config {
         if (this->validate()) {
             m_conf->set("bootstrap.servers", m_kafka_brokers, m_errstr);
             m_conf->set("group.id", m_kafka_group_id, m_errstr);
-//            simple_kafka::common::MetaConsumer metaconsumer;
-
-
-//            conf->set("rebalance_cb", &ex_rebalance_cb, errstr);
             m_conf->set("enable.partition.eof", "true", m_errstr);
-//            m_conf->set("event_cb", dynamic_cast<RdKafka::EventCb*>(&metaconsumer), m_errstr);
-//            m_conf->set("rebalance_cb", &m_rebalance_cb, m_errstr);
-//            m_conf->set("consume_cb", dynamic_cast<RdKafka::ConsumeCb*>(&metaconsumer), m_errstr);
         } else {
             logger->send<simple_logger::LogLevel::ERROR>("Error setting Kafka configuration");
         }
@@ -47,6 +40,11 @@ namespace simple_kafka::config {
             logger->send<simple_logger::LogLevel::ERROR>("KAFKA_GROUP_ID is empty");
             return false;
         }
+        if (m_kafka_msg_timeout < 0) {
+            logger->send<simple_logger::LogLevel::ERROR>("KAFKA_MSG_TIMEOUT is negative");
+            return false;
+        }
+
         return true;
     }
 
@@ -62,6 +60,7 @@ namespace simple_kafka::config {
         j["kafka_brokers"] = m_kafka_brokers;
         j["kafka_topic"] =  m_kafka_topics;
         j["kafka_group_id"] = m_kafka_group_id;
+        j["kafka_msg_timeout"] = m_kafka_msg_timeout;
 
         return j;
     }
@@ -78,6 +77,7 @@ namespace simple_kafka::config {
             m_kafka_topics = j.at("kafka_topic").get<std::vector<std::string>>();
             m_kafka_brokers = j.at("kafka_brokers").get<std::string>();
             m_kafka_group_id = j.at("kafka_group_id").get<std::string>();
+            m_kafka_msg_timeout = j.at("kafka_msg_timeout").get<int>();
             this->m_set_kafka_conf();
         } catch (json::exception &e) {
             logger->send<simple_logger::LogLevel::ERROR>("Error parsing KafkaConfig: " + std::string(e.what()));
@@ -102,11 +102,6 @@ namespace simple_kafka::config {
     }
 
     std::vector<std::string> KafkaConfig::get_kafka_topics() const {
-//        if (m_kafka_topics.empty()) {
-//            return {};
-//        }
-
-
         return m_kafka_topics;
     }
 
@@ -116,6 +111,10 @@ namespace simple_kafka::config {
 
     RdKafka::Conf *KafkaConfig::get_kafka_conf()  {
         return m_conf.get();
+    }
+
+    int KafkaConfig::get_kafka_msg_timeout() const {
+        return m_kafka_msg_timeout;
     }
 
 }

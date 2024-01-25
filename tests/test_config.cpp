@@ -24,6 +24,7 @@ TEST_CASE("KafkaConfig Tests", "[KafkaConfig]") {
         j["kafka_brokers"] = "fromjson:9092";
         j["kafka_topic"] = {"topic1","topic2"};
         j["kafka_group_id"] = "g_id_123";
+        j["kafka_msg_timeout"] = 5000;
 
         config.from_json(j);
 
@@ -43,10 +44,12 @@ TEST_CASE("KafkaConfig Tests", "[KafkaConfig]") {
         REQUIRE(errstr == "true");
         REQUIRE(RdKafka::Conf::CONF_OK == config.get_kafka_conf()->get("auto.commit.interval.ms", errstr));
         REQUIRE(errstr == "5000");
+        REQUIRE(RdKafka::Conf::CONF_OK == config.get_kafka_conf()->get("session.timeout.ms", errstr));
+        REQUIRE(errstr == "45000");
     }
 
     SECTION("to_string method") {
-        std::string expected_str = R"("KafkaConfig":{"kafka_brokers":"localhost:9092","kafka_group_id":"","kafka_topic":[]})";
+        std::string expected_str = R"("KafkaConfig":{"kafka_brokers":"localhost:9092","kafka_group_id":"","kafka_msg_timeout":3000,"kafka_topic":[]})";
         REQUIRE(config.to_string() == expected_str);
     }
 
@@ -55,10 +58,11 @@ TEST_CASE("KafkaConfig Tests", "[KafkaConfig]") {
         j["kafka_brokers"] = "fromjson:9092";
         j["kafka_topic"] = {"topic123"};
         j["kafka_group_id"] = "g_id_123";
+        j["kafka_msg_timeout"] = 5000;
         config.from_json(j);
 
         REQUIRE(config.get_kafka_brokers() == "fromjson:9092");
-        std::string expected_str = R"("KafkaConfig":{"kafka_brokers":"fromjson:9092","kafka_group_id":"g_id_123","kafka_topic":["topic123"]})";
+        std::string expected_str = R"("KafkaConfig":{"kafka_brokers":"fromjson:9092","kafka_group_id":"g_id_123","kafka_msg_timeout":5000,"kafka_topic":["topic123"]})";
         REQUIRE(config.to_string() == expected_str);
     }
 }
