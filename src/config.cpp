@@ -12,8 +12,6 @@ namespace simple_kafka::config {
     void KafkaConfig::m_set_kafka_conf() {
         if (this->validate()) {
             m_conf->set("bootstrap.servers", m_kafka_brokers, m_errstr);
-            m_conf->set("group.id", m_kafka_group_id, m_errstr);
-            m_conf->set("enable.partition.eof", "true", m_errstr);
         } else {
             logger->send<simple_logger::LogLevel::ERROR>("Error setting Kafka configuration");
         }
@@ -110,11 +108,21 @@ namespace simple_kafka::config {
     }
 
     RdKafka::Conf *KafkaConfig::get_kafka_conf()  {
+        m_conf->set("group.id", m_kafka_group_id, m_errstr);
+        m_conf->set("enable.partition.eof", "true", m_errstr);
+        return m_conf.get();
+    }
+
+    RdKafka::Conf *KafkaConfig::get_kafka_producer_conf()  {
         return m_conf.get();
     }
 
     int KafkaConfig::get_kafka_msg_timeout() const {
         return m_kafka_msg_timeout;
+    }
+
+    int KafkaConfig::get_kafka_flush_timeout() const {
+        return m_kafka_flush_timeout;
     }
 
 }

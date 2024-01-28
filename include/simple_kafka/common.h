@@ -8,17 +8,19 @@
 #include <rdkafkacpp.h>
 #include <iostream>
 #include <simple_logger/logger.h>
+#include <common/dates.h>
 
 namespace simple_kafka::common {
 
-    class MetaConsumer {
+    class MetaProducerConsumer {
 
     private:
         std::shared_ptr<simple_logger::Logger> logger;
 
     public:
-        explicit MetaConsumer(std::shared_ptr<simple_logger::Logger> logger);
-        virtual void consume_cb(RdKafka::Message &msg) ;
+        explicit MetaProducerConsumer(std::shared_ptr<simple_logger::Logger> logger);
+        virtual void consume(RdKafka::Message &msg) ;
+        virtual std::string get_msg_to_produce() ;
     };
 
 
