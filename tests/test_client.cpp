@@ -14,7 +14,7 @@ using namespace simple_kafka::common;
 TEST_CASE("KafkaClientConsumer", "[KafkaClientConsumer]") {
     KafkaConfig config;
     MetaProducerConsumer exConsumer = MetaProducerConsumer(config.logger);
-    KafkaClientConsumer consumer(config, exConsumer);
+    KafkaClientConsumer<MetaProducerConsumer> consumer(config, exConsumer);
     consumer.subscribe();
     consumer.consume();
     //sleep for 30 seconds
