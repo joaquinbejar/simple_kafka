@@ -21,8 +21,6 @@ public:
     void from_string( const std::string& msg) {
         this->message = msg;
     }
-
-
 };
 
 TEST_CASE("KafkaClientConsumer", "[KafkaClientConsumer]") {

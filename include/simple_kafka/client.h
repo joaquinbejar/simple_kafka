@@ -31,7 +31,9 @@ namespace simple_kafka::client {
     class KafkaClientConsumer {
 
     public:
-        KafkaClientConsumer(config::KafkaConfig &config) : m_config(std::move(config)) {
+        T caster;
+
+        explicit KafkaClientConsumer(config::KafkaConfig &config) : m_config(std::move(config)) {
             std::string errstr;
             m_consumer = std::unique_ptr<RdKafka::KafkaConsumer>(
                     RdKafka::KafkaConsumer::create(m_config.get_kafka_conf(), errstr));
@@ -77,7 +79,7 @@ namespace simple_kafka::client {
     private:
         config::KafkaConfig m_config;
         std::shared_ptr<RdKafka::KafkaConsumer> m_consumer;
-        T m_caster;
+
         std::atomic<bool> m_run_consume = false;
         std::thread m_consumeThread;
         std::mutex m_Mutex;
@@ -118,7 +120,7 @@ namespace simple_kafka::client {
                 try {
                     auto msg = std::unique_ptr<RdKafka::Message>(m_consumer->consume(m_config.get_kafka_msg_timeout()));
                     std::string msg_str = msg_to_string(msg);
-                    m_caster.from_string(msg_str);
+                    caster.from_string(msg_str);
                 } catch (std::exception &e) {
                     m_config.logger->send<simple_logger::LogLevel::ERROR>(
                             "KafkaClientConsumer Error in m_consume: " + std::string(e.what()));
