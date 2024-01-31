@@ -41,6 +41,7 @@ namespace simple_kafka::config {
         std::shared_ptr<RdKafka::Conf> m_conf = std::shared_ptr<RdKafka::Conf>(
                 RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
         std::string m_errstr;
+        int m_kafka_flush_timeout = get_env_variable_int("KAFKA_FLUSH_TIMEOUT", 1000);
 
 
     public:
@@ -52,7 +53,11 @@ namespace simple_kafka::config {
 
         [[nodiscard]] RdKafka::Conf *get_kafka_conf();
 
+        [[nodiscard]] RdKafka::Conf *get_kafka_producer_conf();
+
         [[nodiscard]] int get_kafka_msg_timeout() const;
+
+        [[nodiscard]] int get_kafka_flush_timeout() const;
 
         // add a logger to the config
         std::shared_ptr<simple_logger::Logger> logger = std::make_shared<simple_logger::Logger>(loglevel);
