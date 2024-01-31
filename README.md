@@ -1,2 +1,4 @@
 # simple_kafka
-Simple library to handle a kafak client
+
+v0.1.0
+Simple library to handle a kafka client
