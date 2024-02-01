@@ -1,7 +1,7 @@
 include(FetchContent)
 FetchContent_Declare(librdkafka
         GIT_REPOSITORY https://github.com/joaquinbejar/librdkafka.git
-        GIT_BRANCH master
+        GIT_TAG v0.1.0
 )
 FetchContent_MakeAvailable(librdkafka)
 
