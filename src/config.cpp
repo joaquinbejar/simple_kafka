@@ -4,7 +4,8 @@
 #include <simple_kafka/config.h>
 
 namespace simple_kafka::config {
-    
+
+
     KafkaConfig::KafkaConfig() : simple_config::Config() {
         this->m_set_kafka_conf();
     }
@@ -54,13 +55,20 @@ namespace simple_kafka::config {
      * @return A JSON object containing the configuration settings.
      */
     json KafkaConfig::to_json() const {
-        json j;
-        j["kafka_brokers"] = m_kafka_brokers;
-        j["kafka_topic"] =  m_kafka_topics;
-        j["kafka_group_id"] = m_kafka_group_id;
-        j["kafka_msg_timeout"] = m_kafka_msg_timeout;
-
-        return j;
+        try {
+            json j;
+            j["kafka_brokers"] = m_kafka_brokers;
+            j["kafka_topic"] = m_kafka_topics;
+            j["kafka_group_id"] = m_kafka_group_id;
+            j["kafka_msg_timeout"] = m_kafka_msg_timeout;
+            j["kafka_flush_timeout"] = m_kafka_flush_timeout;
+            j["kafka_warning_partition_eof"] = m_kafka_warning_partition_eof;
+            j["kafka_consumer_name"] = m_kafka_consumer_name;
+            return j;
+        } catch (json::exception &e) {
+            logger->send<simple_logger::LogLevel::ERROR>("Error parsing KafkaConfig to_json: " + std::string(e.what()));
+            throw e;
+        }
     }
 
     /**
@@ -76,6 +84,9 @@ namespace simple_kafka::config {
             m_kafka_brokers = j.at("kafka_brokers").get<std::string>();
             m_kafka_group_id = j.at("kafka_group_id").get<std::string>();
             m_kafka_msg_timeout = j.at("kafka_msg_timeout").get<int>();
+            m_kafka_flush_timeout = j.at("kafka_flush_timeout").get<int>();
+            m_kafka_warning_partition_eof = j.at("kafka_warning_partition_eof").get<bool>();
+            m_kafka_consumer_name = j.at("kafka_consumer_name").get<std::string>();
             this->m_set_kafka_conf();
         } catch (json::exception &e) {
             logger->send<simple_logger::LogLevel::ERROR>("Error parsing KafkaConfig: " + std::string(e.what()));
@@ -107,13 +118,29 @@ namespace simple_kafka::config {
         return m_kafka_group_id;
     }
 
-    RdKafka::Conf *KafkaConfig::get_kafka_conf()  {
+    std::string KafkaConfig::get_kafka_consumer_name() const {
+        return m_kafka_consumer_name;
+    }
+
+    void KafkaConfig::set_kafka_consumer_name(const std::string &name) {
+        m_kafka_consumer_name = name;
+    }
+
+    bool KafkaConfig::get_kafka_warning_partition_eof() const {
+        return m_kafka_warning_partition_eof;
+    }
+
+    RdKafka::Conf *KafkaConfig::get_kafka_conf() {
         m_conf->set("group.id", m_kafka_group_id, m_errstr);
-        m_conf->set("enable.partition.eof", "true", m_errstr);
+        if (m_kafka_warning_partition_eof)
+            m_conf->set("enable.partition.eof", "true", m_errstr);
+        else
+            m_conf->set("enable.partition.eof", "false", m_errstr);
+        m_conf->set("client.id", m_kafka_consumer_name, m_errstr);  // set the unique client id
         return m_conf.get();
     }
 
-    RdKafka::Conf *KafkaConfig::get_kafka_producer_conf()  {
+    RdKafka::Conf *KafkaConfig::get_kafka_producer_conf() {
         return m_conf.get();
     }
 
