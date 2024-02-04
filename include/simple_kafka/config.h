@@ -15,6 +15,8 @@ namespace simple_kafka::config {
     using ::common::get_env_variable_string;
     using ::common::get_env_variable_vector_string;
     using ::common::get_env_variable_int;
+    using ::common::get_env_variable_bool;
+    using ::common::key_generator;
 
     class KafkaConfig : public simple_config::Config {
     public:
@@ -37,11 +39,13 @@ namespace simple_kafka::config {
         std::string m_kafka_brokers = get_env_variable_string("KAFKA_BROKERS", "localhost:9092");
         std::vector<std::string> m_kafka_topics = get_env_variable_vector_string("KAFKA_TOPICS", "");
         std::string m_kafka_group_id = get_env_variable_string("KAFKA_GROUP_ID", "");
+        std::string m_kafka_consumer_name = get_env_variable_string("KAFKA_CONSUMER_NAME", key_generator());
         int m_kafka_msg_timeout = get_env_variable_int("KAFKA_MSG_TIMEOUT", 3000);
         std::shared_ptr<RdKafka::Conf> m_conf = std::shared_ptr<RdKafka::Conf>(
                 RdKafka::Conf::create(RdKafka::Conf::CONF_GLOBAL));
         std::string m_errstr;
         int m_kafka_flush_timeout = get_env_variable_int("KAFKA_FLUSH_TIMEOUT", 1000);
+        bool m_kafka_warning_partition_eof = get_env_variable_bool("KAFKA_WARNING_PARTITION_EOF", false);
 
 
     public:
@@ -50,6 +54,12 @@ namespace simple_kafka::config {
         [[nodiscard]] std::vector<std::string> get_kafka_topics() const;
 
         [[nodiscard]] std::string get_kafka_group_id() const;
+
+        [[nodiscard]] std::string get_kafka_consumer_name() const;
+
+        void set_kafka_consumer_name(const std::string &name);
+
+        [[nodiscard]] bool get_kafka_warning_partition_eof() const;
 
         [[nodiscard]] RdKafka::Conf *get_kafka_conf();
 

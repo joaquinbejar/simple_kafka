@@ -87,10 +87,12 @@ namespace simple_kafka::client {
         std::string msg_to_string(std::unique_ptr<RdKafka::Message> &msg) {
             std::string msg_str;
             switch (msg->err()) {
-                case RdKafka::ERR__TIMED_OUT:
-                    m_config.logger->send<simple_logger::LogLevel::WARNING>(
-                            "KafkaClientConsumer Consumption timed out.");
+                case RdKafka::ERR__TIMED_OUT: {
+                    if (m_config.get_kafka_warning_partition_eof())
+                        m_config.logger->send<simple_logger::LogLevel::WARNING>(
+                                "KafkaClientConsumer Consumption timed out.");
                     break;
+                }
                 case RdKafka::ERR_NO_ERROR: {
                     msg_str = static_cast<const char *>(msg->payload());
                     m_config.logger->send<simple_logger::LogLevel::DEBUG>(
